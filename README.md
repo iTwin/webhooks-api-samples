@@ -36,3 +36,7 @@ Deploy the application using Heroku:
 3. Replace other configuration values in `.env`.
 4. Deploy by pushing the code <https://devcenter.heroku.com/articles/git#deploying-code>.
 5. Use `heroku logs --tail` for monitoring the behavior of the application.
+
+#### Related material
+
+- [Deploying an iTwin app to Heroku/Netlify](https://medium.com/itwinjs/deploying-the-itwin-viewer-to-a-web-host-d45c5cfdf0cf)
