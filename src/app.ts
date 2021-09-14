@@ -27,6 +27,15 @@ export class App {
     this.api = new Api();
     this.webhooks = {};
 
+    // Add request handler for webhook callback validation 'OPTIONS [hostname]/events'
+    this.app.options("/events", async (req, res) => {
+      const requestedOrigin = req.headers["webhook-request-origin"] as string;
+
+      res.setHeader("allow", ["POST"]);
+      res.setHeader("webhook-allowed-origin", requestedOrigin);
+      res.sendStatus(200);
+    });
+
     // Add request handler 'POST [hostname]/events'
     this.app.post("/events", (req, res) => {
       const signatureHeader = req.headers["signature"] as string;
