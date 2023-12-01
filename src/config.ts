@@ -23,11 +23,6 @@ export default class Configuration {
     if (!process.env.APP_URL)
       throw new Error("Missing configuration value for APP_URL. Populate it with your application URL.");
 
-    if (!process.env.IMODEL_ID)
-      throw new Error(
-        "Missing configuration value for IMODEL_ID. You can create your iModel at https://developer.bentley.com/my-imodels/"
-      );
-
     if (!process.env.OAUTH_AUTHORITY)
       throw new Error("Missing configuration value for OAUTH_AUTHORITY. Set it to https://ims.bentley.com");
 
@@ -41,8 +36,7 @@ export default class Configuration {
       ApiUrl: process.env.API_URL,
       AppUrl: process.env.APP_URL,
       ClientId: process.env.OAUTH_CLIENT_ID,
-      ClientSecret: process.env.OAUTH_CLIENT_SECRET,
-      IModelId: process.env.IMODEL_ID
+      ClientSecret: process.env.OAUTH_CLIENT_SECRET
     };
   }
 }

@@ -1,10 +1,10 @@
-# Webhooks API sample application
+# Webhooks V2 API sample application
 
-Node.js (Express) application that shows the basic examples of consuming Webhooks API and reacting to iTwin Platform events.
+Node.js (Express) application that shows the basic examples of consuming Webhooks V2 API and reacting to iTwin Platform events.
 
 This sample application:
 
-1. Creates new webhook for an existing iModel events.
+1. Creates and activates a new webhook with two event types (`iModels.iModelDeleted.v1` and `accessControl.memberAdded.v1`).
 2. Starts Express.js server.
 3. Receives events and validates the signature.
 4. Reacts accordingly to event type.

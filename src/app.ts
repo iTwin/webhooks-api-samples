@@ -8,7 +8,7 @@ import express, { Application } from "express";
 import http from "http";
 import Api from "./api";
 import Configuration from "./config";
-import { Config, Event, IModelDeletedEvent, NamedVersionCreatedEvent } from "./models";
+import { Config, Event, IModelDeletedEvent, MemberAddedEvent } from "./models";
 
 export class App {
   private api: Api;
@@ -27,45 +27,25 @@ export class App {
     this.api = new Api();
     this.webhooks = {};
 
-    // Add request handler for webhook callback validation 'OPTIONS [hostname]/events'
-    this.app.options("/events", async (req, res) => {
-      const requestedOrigin = req.headers["webhook-request-origin"] as string;
-
-      res.setHeader("allow", ["POST"]);
-      res.setHeader("webhook-allowed-origin", requestedOrigin);
-      res.sendStatus(200);
-    });
-
     // Add request handler 'POST [hostname]/events'
     this.app.post("/events", (req, res) => {
       const signatureHeader = req.headers["signature"] as string;
       if (!signatureHeader || !req.body) res.sendStatus(401);
 
       const event = JSON.parse(req.body) as Event;
-      const webhookId = event.subscriptionId;
+      const webhookId = event.webhookId;
       const secret = this.webhooks[webhookId];
 
-      if (!this.validateSignature(secret, req.body, signatureHeader)) {
-        res.sendStatus(401);
-      } else {
-        switch (event.contentType) {
-          case "iModelDeletedEvent": {
-            const content = event.content as IModelDeletedEvent;
-            console.log(`iModel (ID: ${content.imodelId}) in project (ID: ${content.projectId}) was deleted`);
-            break;
-          }
-          case "NamedVersionCreatedEvent": {
-            const content = event.content as NamedVersionCreatedEvent;
-            console.log(
-              `New named version (ID: ${content.versionId}, Name: ${content.versionName}) was created for iModel (ID: ${content.imodelId})`
-            );
-            break;
-          }
-          default:
-            res.status(400).send("Unexpected event type");
-        }
-        res.sendStatus(204);
-      }
+      if (!this.validateSignature(secret, req.body, signatureHeader)) res.sendStatus(401);
+
+      // do cool stuff here
+      // but we are not awaiting.
+      // there is a five second timeout
+      // any request taking more than that
+      // will be marked as fail and resent.
+      this.DoCoolStuffAsync(event);
+
+      res.sendStatus(200);
     });
   }
 
@@ -74,7 +54,8 @@ export class App {
     const server = http.createServer(this.app);
 
     // Create a webhook before starting the server
-    await this.createWebhook();
+    var webhookId = await this.createWebhook();
+    await this.activateWebhook(webhookId);
 
     server.listen(process.env.PORT, () => {
       return console.log(`Server was started.`);
@@ -82,15 +63,21 @@ export class App {
   }
 
   // Method for webhook creation
-  private async createWebhook(): Promise<void> {
-    const imodelId = this.config.IModelId;
+  private async createWebhook(): Promise<string> {
     const callbackUrl = `${this.config.AppUrl}/events`;
-    const eventTypes = ["iModelDeletedEvent", "NamedVersionCreatedEvent"];
+    const eventTypes = ["iModels.iModelDeleted.v1", "accessControl.memberAdded.v1"];
 
-    const webhook = await this.api.createIModelEventWebhook(imodelId, callbackUrl, eventTypes);
+    const webhook = await this.api.createWebhook(callbackUrl, eventTypes);
 
     // Store created webhook ID and secret
     this.webhooks[webhook.webhookId] = webhook.secret;
+
+    return webhook.webhookId;
+  }
+
+  // Method for webhook activation
+  private async activateWebhook(id: string): Promise<void> {
+    await this.api.activateWebhook(id);
   }
 
   // Method for event signature validation
@@ -103,5 +90,22 @@ export class App {
 
     // Event is valid if the signatures match
     return generated_sig.toLowerCase() === signature.toLowerCase();
+  }
+
+  private async DoCoolStuffAsync(event: Event): Promise<void> {
+    switch (event.eventType) {
+      case "iModels.iModelDeleted.v1": {
+        const content = event.content as IModelDeletedEvent;
+        console.log(`iModel (ID: ${content.imodelId}) in itwin (ID: ${event.iTwinId}) was deleted`);
+        break;
+      }
+      case "accessControl.memberAdded.v1": {
+        const content = event.content as MemberAddedEvent;
+        console.log(`Member (Id:${content.memberId}) was added to iTwin (${event.iTwinId})!  Member was granted the ${content.roleName} role (Id: ${content.roleId}).`);
+        break;
+      }
+      default:
+        console.log("Unexpected event type");
+    }
   }
 }

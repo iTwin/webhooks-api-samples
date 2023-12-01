@@ -9,30 +9,29 @@ export interface Config {
   AppUrl: string;
   ClientId: string;
   ClientSecret: string;
-  IModelId: string;
 }
 
 export type Event = {
-  content: IModelDeletedEvent | NamedVersionCreatedEvent;
-  contentType: string;
+  content: IModelDeletedEvent | MemberAddedEvent;
+  eventType: string;
   enqueuedDateTime: string;
+  iTwinId: string;
   messageId: string;
-  subscriptionId: string;
+  webhookId: string;
 };
 
-export type IModelEvent = {
+export type IModelDeletedEvent = {
   imodelId: string;
-  projectId: string;
+  userId: string;
 };
 
-export type IModelDeletedEvent = IModelEvent;
-
-export type NamedVersionCreatedEvent = {
-  changesetId: string;
-  changesetIndex: string;
-  versionId: string;
-  versionName: string;
-} & IModelEvent;
+export type MemberAddedEvent = {
+  memberId: string;
+  eventCreatedBy: string;
+  memberType: string;
+  roleId: string;
+  roleName: string;
+}
 
 export type WebhookMap = {
   secret: string;
