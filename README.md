@@ -1,42 +1,16 @@
-# Webhooks API sample application
+# Webhooks API Samples
 
-Node.js (Express) application that shows the basic examples of consuming Webhooks API and reacting to iTwin Platform events.
+A collection of samples that show the basics of consuming Webhooks API and reacting to iTwin Platform events
 
-This sample application:
+## Available Samples
 
-1. Creates new webhook for an existing iModel events.
-2. Starts Express.js server.
-3. Receives events and validates the signature.
-4. Reacts accordingly to event type.
+| Name | Description  | API Version |
+|------|--------------|-------------|
+| [webhooks-api-v1-sample-nodejs-express-app](https://github.com/iTwin/webhooks-api-samples/tree/main/webhooks-api-v1-sample-nodejs-express-app) | Node.js (Express) application that shows the basic examples of consuming Webhooks V1 API and reacting to iTwin Platform events.. | V1 |
+| [webhooks-api-v2-sample-nodejs-expres-app](https://github.com/iTwin/webhooks-api-samples/tree/main/webhooks-api-v2-sample-nodejs-express-app) | Node.js (Express) application that shows the basic examples of consuming Webhooks V2 API and reacting to iTwin Platform events. | V2 |
+| [webhooks-api-v2-sample-azure-function](https://github.com/iTwin/webhooks-api-samples/tree/main/webhooks-api-v2-sample-azure-function) | An Azure Function that shows the basic examples of consuming Webhooks V2 API and reacting to iTwin Platform events. | V2 |
 
-## Prerequisites
+## Related Materials
 
-1. Create "Service" type application in <https://developer.bentley.com/register/>.
-2. Prepare an existing iModel that your client has access to.
-3. Deploy this application (e.g. Heroku/Netlify or any other preference).
-4. Provide your configuration values in `.env` file.
-
-### Local
-
-You can try and run the application locally to see if it works, but it won't capture any events unless it is publicly available.
-
-To run the application locally execute:
-
-```ps
-npm install
-npm start
-```
-
-### Deployment
-
-Deploy the application using Heroku:
-
-1. Create new Heroku application and empty Heroku Git repository <https://devcenter.heroku.com/articles/git#for-a-new-heroku-app>.
-2. Set `APP_URL` in `.env` with newly created public address.
-3. Replace other configuration values in `.env`.
-4. Deploy by pushing the code <https://devcenter.heroku.com/articles/git#deploying-code>.
-5. Use `heroku logs --tail` for monitoring the behavior of the application.
-
-#### Related material
-
-- [Deploying an iTwin app to Heroku/Netlify](https://medium.com/itwinjs/deploying-the-itwin-viewer-to-a-web-host-d45c5cfdf0cf)
+* [Webhooks V1 API Overview](https://developer.bentley.com/apis/webhooks/overview/)
+* [Webhooks V2 API Overview](https://developer.bentley.com/apis/webhooks-v2/overview/)
