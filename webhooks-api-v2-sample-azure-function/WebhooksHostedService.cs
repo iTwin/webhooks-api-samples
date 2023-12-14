@@ -41,50 +41,20 @@ public class WebhooksHostedService : IHostedService
 
     private void CheckForActiveWebhook()
         {
-        Webhook? webhook = null;
-
         var defaultWebhookId = Environment.GetEnvironmentVariable("WEBHOOK_ID");
-        if(!string.IsNullOrWhiteSpace(defaultWebhookId))
+        if (!string.IsNullOrWhiteSpace(defaultWebhookId))
             {
-            webhook = _webhooksService.GetWebhookAsync(defaultWebhookId).Result;
-            }
-
-        // Create a new webhook if provided one does not exist
-        if (webhook == null)
-            {
-            var createWebhookRequest = new WebhookCreateRequest()
+            Webhook? webhook = _webhooksService.GetWebhookAsync(defaultWebhookId).Result;
+            // activate webhook if not active.
+            if (!webhook.Active)
                 {
-                CallbackUrl = Environment.GetEnvironmentVariable("WEBHOOK_CALLBACK_URL"),
-                Secret = Environment.GetEnvironmentVariable("WEBHOOK_SECRET"),
-                EventTypes = Environment.GetEnvironmentVariable("WEBHOOK_EVENT_TYPES").Split(",").Select(et => et.Trim()).ToList(),
-                Scope = "Account"
-                };
+                var patchWebhookRequest = new WebhookPatchRequest()
+                    {
+                    Active = true,
+                    };
 
-            var createdWebhook = _webhooksService.CreateWebhookAsync(createWebhookRequest).Result;
-            _logger.LogInformation("Created webhook id: " + createdWebhook.Id.ToString());
-
-            webhook = new Webhook
-                {
-                Id = createdWebhook.Id,
-                Active = createdWebhook.Active,
-                CallbackUrl = createdWebhook.CallbackUrl,
-                EventTypes = createdWebhook.EventTypes,
-                Scope = createdWebhook.Scope,
-                ScopeId = createdWebhook.ScopeId
-                };
-
-            _webhookId = createdWebhook.Id.ToString();
-            }
-
-        // activate webhook if not active.
-        if (!webhook.Active)
-            {
-            var patchWebhookRequest = new WebhookPatchRequest()
-                {
-                Active = true,
-                };
-
-            _webhooksService.PatchWebhookAsync(webhook.Id.ToString(), patchWebhookRequest).ConfigureAwait(false);
+                _webhooksService.PatchWebhookAsync(webhook.Id.ToString(), patchWebhookRequest).ConfigureAwait(false);
+                }
             }
         }
 

@@ -5,7 +5,6 @@ An Azure Function that shows the basic examples of consuming Webhooks V2 API and
 This sample Azure Function:
 
 * On startup checks if the provided webhook exists and is active.
-	- If the webhook does not exist a new webhook will be created and activated.
 	- Inactive webhooks will be reactivated
 * Creates an Azure Function with an HTTP Trigger.
 * Receives events and validates the signature.
@@ -24,9 +23,7 @@ This sample Azure Function:
 
 The following need to be set in the `host.json` or `local.settings.josn` if you are developing locally.
 
-* `WEBHOOK_ID` [OPTIONAL]: Id of an existing webhook. If not provided a webhook will be created on startup. 
-* `WEBHOOK_CALLBACK_URL` [OPTIONAL]: Callback url that will be used when creating an webhook.
-* `WEBHOOK_EVENT_TYPES` [OPTIONAL]: Comma seperated list of event types what will be used when creating a webhook.
+* `WEBHOOK_ID` Id of an existing webhook. If webhook exist, it will be activated on startup.
 * `WEBHOOK_SECRET`: 32 character string used for the `secret` property when creating a webhook. This will also be used to validate the post body of the webhook request. For more information of the `secret` property see [here](https://developer.bentley.com/apis/webhooks-v2/overview/#webhooksecret)
 * `OAUTH_CLIENT_ID`: Id of the service application
 * `OAUTH_CLIENT_SECRET`: Secret of the service application

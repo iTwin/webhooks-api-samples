@@ -48,7 +48,7 @@ public class Webhook
         // but we are not awaiting.
         // there is a five second timeout
         // any request taking more than that
-        // will be marked as fail and resent.
+        // will be marked as failed and resent.
         DoCoolStuffAsync();
 
         return req.CreateResponse(HttpStatusCode.OK);
