@@ -55,4 +55,27 @@ export default class Api {
       console.log(err.response.data);
     }
   }
+
+  public async activateIModelEventWebhook(): Promise<void> {
+    const expiration = new Date();
+    expiration.setMinutes(expiration.getMinutes() + 30);  
+
+    const requestBody = {
+      expirationDateTime: expiration.toISOString()
+    };
+
+    try {
+      await axios({
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + (await this.authService.getAccessToken())
+        },
+        data: requestBody,
+        url: `${this.config.ApiUrl}/webhooks/${this.config.WebhookId}/activate`
+      });
+    } catch (err) {
+      console.log("Could not activate a webhook.");
+      console.log(err.response.data);
+    }
+  }
 }

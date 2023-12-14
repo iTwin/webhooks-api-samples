@@ -4,7 +4,7 @@ Node.js (Express) application that shows the basic examples of consuming Webhook
 
 This sample application:
 
-1. Activates the webhook with two event types (specify the webhook id with the `WEBHOOK_ID`).
+1. Activates an existing webhook with two event types (specify the webhook id with the `WEBHOOK_ID`).
 2. Starts Express.js server.
 3. Receives events and validates the signature.
 4. Reacts accordingly to event type.

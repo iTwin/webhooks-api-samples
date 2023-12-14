@@ -10,6 +10,8 @@ export interface Config {
   ClientId: string;
   ClientSecret: string;
   IModelId: string;
+  WebhookId: string;
+  WebhookSecret: string;
 }
 
 export type Event = {

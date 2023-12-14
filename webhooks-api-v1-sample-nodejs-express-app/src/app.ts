@@ -15,9 +15,6 @@ export class App {
   private app: Application;
   private config: Config;
 
-  // Webhook ID to secret map
-  private webhooks: { [key: string]: string };
-
   constructor() {
     this.config = Configuration.read();
 
@@ -25,7 +22,6 @@ export class App {
     this.app.use(express.text({ type: "application/json" }));
 
     this.api = new Api();
-    this.webhooks = {};
 
     // Add request handler for webhook callback validation 'OPTIONS [hostname]/events'
     this.app.options("/events", async (req, res) => {
@@ -42,10 +38,7 @@ export class App {
       if (!signatureHeader || !req.body) res.sendStatus(401);
 
       const event = JSON.parse(req.body) as Event;
-      const webhookId = event.subscriptionId;
-      const secret = this.webhooks[webhookId];
-
-      if (!this.validateSignature(secret, req.body, signatureHeader)) {
+      if (!this.validateSignature(this.config.WebhookSecret, req.body, signatureHeader)) {
         res.sendStatus(401);
       } else {
         switch (event.contentType) {
@@ -74,23 +67,16 @@ export class App {
     const server = http.createServer(this.app);
 
     // Create a webhook before starting the server
-    await this.createWebhook();
+    await this.activateWebhook();
 
     server.listen(process.env.PORT, () => {
       return console.log(`Server was started.`);
     });
   }
 
-  // Method for webhook creation
-  private async createWebhook(): Promise<void> {
-    const imodelId = this.config.IModelId;
-    const callbackUrl = `${this.config.AppUrl}/events`;
-    const eventTypes = ["iModelDeletedEvent", "NamedVersionCreatedEvent"];
-
-    const webhook = await this.api.createIModelEventWebhook(imodelId, callbackUrl, eventTypes);
-
-    // Store created webhook ID and secret
-    this.webhooks[webhook.webhookId] = webhook.secret;
+  // Method for webhook activation
+  private async activateWebhook(): Promise<void> {
+    await this.api.activateIModelEventWebhook();
   }
 
   // Method for event signature validation
