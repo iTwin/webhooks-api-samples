@@ -4,7 +4,7 @@ Node.js (Express) application that shows the basic examples of consuming Webhook
 
 This sample application:
 
-1. Creates and activates a new webhook with two event types (`iModels.iModelDeleted.v1` and `accessControl.memberAdded.v1`).
+1. Activates the webhook with two event types (specify the webhook id with the `WEBHOOK_ID`).
 2. Starts Express.js server.
 3. Receives events and validates the signature.
 4. Reacts accordingly to event type.
@@ -12,9 +12,10 @@ This sample application:
 ## Prerequisites
 
 1. Create "Service" type application in <https://developer.bentley.com/register/>.
-2. Prepare an existing iModel that your client has access to.
-3. Deploy this application (e.g. Heroku/Netlify or any other preference).
-4. Provide your configuration values in `.env` file.
+2. Create or update a webhooks with the event types `iModels.iModelDeleted.v1` and `accessControl.memberAdded.v1`. Store this webhook's secret in the environment variable `WEBHOOK_SECRET`
+3. Prepare an existing iModel that your client has access to.
+4. Deploy this application (e.g. Heroku/Netlify or any other preference).
+5. Provide your configuration values in `.env` file.
 
 ### Local
 

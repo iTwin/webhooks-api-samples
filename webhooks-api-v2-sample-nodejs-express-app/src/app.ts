@@ -15,9 +15,6 @@ export class App {
   private app: Application;
   private config: Config;
 
-  // Webhook ID to secret map
-  private webhooks: { [key: string]: string };
-
   constructor() {
     this.config = Configuration.read();
 
@@ -25,7 +22,6 @@ export class App {
     this.app.use(express.text({ type: "application/json" }));
 
     this.api = new Api();
-    this.webhooks = {};
 
     // Add request handler 'POST [hostname]/events'
     this.app.post("/events", (req, res) => {
@@ -33,8 +29,7 @@ export class App {
       if (!signatureHeader || !req.body) res.sendStatus(401);
 
       const event = JSON.parse(req.body) as Event;
-      const webhookId = event.webhookId;
-      const secret = this.webhooks[webhookId];
+      const secret = this.config.WebhookSecret
 
       if (!this.validateSignature(secret, req.body, signatureHeader)) res.sendStatus(401);
 
@@ -54,25 +49,11 @@ export class App {
     const server = http.createServer(this.app);
 
     // Create a webhook before starting the server
-    var webhookId = await this.createWebhook();
-    await this.activateWebhook(webhookId);
+    await this.activateWebhook(this.config.WebhookId);
 
     server.listen(process.env.PORT, () => {
       return console.log(`Server was started.`);
     });
-  }
-
-  // Method for webhook creation
-  private async createWebhook(): Promise<string> {
-    const callbackUrl = `${this.config.AppUrl}/events`;
-    const eventTypes = ["iModels.iModelDeleted.v1", "accessControl.memberAdded.v1"];
-
-    const webhook = await this.api.createWebhook(callbackUrl, eventTypes);
-
-    // Store created webhook ID and secret
-    this.webhooks[webhook.webhookId] = webhook.secret;
-
-    return webhook.webhookId;
   }
 
   // Method for webhook activation
