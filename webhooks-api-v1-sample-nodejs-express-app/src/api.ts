@@ -20,12 +20,13 @@ export default class Api {
 
   public async createIModelEventWebhook(
     imodelId: string,
-    callbackUrl: string,
     eventTypes: string[]
   ): Promise<WebhookMap> {
     const expiration = new Date();
     expiration.setMinutes(expiration.getMinutes() + 30);
-
+    
+    const callbackUrl = `${this.config.AppUrl}/events`;
+    
     const requestBody = {
       imodelId,
       callbackUrl,
