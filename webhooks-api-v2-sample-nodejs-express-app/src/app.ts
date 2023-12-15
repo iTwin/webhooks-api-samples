@@ -48,7 +48,7 @@ export class App {
   public async start(): Promise<void> {
     const server = http.createServer(this.app);
 
-    // Create a webhook before starting the server
+    // activate the webhook before starting the server
     await this.activateWebhook(this.config.WebhookId);
 
     server.listen(process.env.PORT, () => {
