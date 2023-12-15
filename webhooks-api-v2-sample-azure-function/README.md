@@ -8,11 +8,12 @@ This sample Azure Function:
 	- Inactive webhooks will be reactivated
 * Creates an Azure Function with an HTTP Trigger.
 * Receives events and validates the signature.
-* On shutdown will deactivate the existing or newly created webhook.
+* On shutdown the provided webhook will be deactivated.
 
 ## Prerequisites
 
 * Create "Service" type application in <https://developer.bentley.com/register/> with the scopes `webhooks:read` and `webhooks:modify`.
+* Create a webhook. Store this webhook's secret in the environment variable `WEBHOOK_SECRET`
 * [Git](https://git-scm.com/)
 * Visual Studio 2019/2022 or [Visual Studio Code](https://code.visualstudio.com/)
 * [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0/)
