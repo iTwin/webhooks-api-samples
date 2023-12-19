@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "webhooks_v2_api_sample_app": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7066",
+      "launchBrowser": false
+    }
+  }
+}
