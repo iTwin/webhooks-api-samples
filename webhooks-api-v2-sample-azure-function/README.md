@@ -12,7 +12,7 @@ This sample Azure Function:
 
 ## Prerequisites
 
-* Create "Service" type application in <https://developer.bentley.com/register/> with the scopes `webhooks:read` and `webhooks:modify`.
+* Create "Service" type application in <https://developer.bentley.com/register/> with the scope `itwin-platform`.
 * Create a webhook. Store this webhook's secret in the environment variable `WEBHOOK_SECRET`
 * [Git](https://git-scm.com/)
 * Visual Studio 2019/2022 or [Visual Studio Code](https://code.visualstudio.com/)

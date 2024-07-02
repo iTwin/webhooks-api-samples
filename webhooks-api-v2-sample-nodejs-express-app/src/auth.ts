@@ -21,7 +21,7 @@ export default class AuthService {
       client_id: config.ClientId,
       client_secret: config.ClientSecret,
       grant_type: "client_credentials",
-      scope: "webhooks:read webhooks:modify"
+      scope: "itwin-platform"
     };
   }
 
