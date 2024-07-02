@@ -9,17 +9,17 @@ using webhooks_api_v2_sample_azure_function.Services.Interfaces;
 
 namespace webhooks_api_v2_sample_azure_function.Services;
 
-public class AuthService: IAuthService
-    {
+public class AuthService : IAuthService
+{
     private readonly HttpClient _authHttpClient;
 
     public AuthService(IHttpClientFactory httpClientFactory)
-        {
+    {
         _authHttpClient = httpClientFactory.CreateClient();
-        }
+    }
 
     public async Task<string> GetAccessToken()
-        {
+    {
         var clientId = Environment.GetEnvironmentVariable("OAUTH_CLIENT_ID");
         var secret = Environment.GetEnvironmentVariable("OAUTH_CLIENT_SECRET");
 
@@ -27,7 +27,7 @@ public class AuthService: IAuthService
                     {
                 new KeyValuePair<string, string>("OAUTH_CLIENT_ID", clientId),
                 new KeyValuePair<string, string>("client_secret", secret),
-                new KeyValuePair<string, string>("scope", "webhooks:modify webhooks:read"),
+                new KeyValuePair<string, string>("scope", "itwin-platform"),
                 new KeyValuePair<string, string>("grant_type", "client_credentials"),
             });
 
@@ -37,6 +37,6 @@ public class AuthService: IAuthService
         var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(stringResponse);
 
         return tokenResponse.access_token;
-        }
     }
+}
 
